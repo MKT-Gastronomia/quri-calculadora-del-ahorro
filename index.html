@@ -1,558 +1,458 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Quri — tu calculadora de ahorro</title>
-  <style>
-    :root{
-      --bg:#07101a;
-      --card:#0b1724;
-      --card2:#0d1b2a;
-      --text:#e7f0ff;
-      --muted:rgba(231,240,255,.72);
-      --line:rgba(255,255,255,.08);
-      --primary:#18b26b;
-      --primary2:#0e8e52;
-      --gold:#f1c84c;
-      --shadow: 0 16px 45px rgba(0,0,0,.35);
-      --radius:16px;
-    }
+<meta charset="utf-8" />
+<base href="../">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Quri — tu calculadora de ahorro</title>
+<style>
+  :root{
+    --bg: #0f1a24;
+    --panel: #12202b;
+    --gold:#f2c94c;
+    --gold-2:#cfa53b;
+    --accent:#18b279;
+    --text:#e8f0f6;
+    --muted:#9fb2c2;
+    --ring:#243544;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    color:var(--text);
+    background: radial-gradient(1200px 800px at 50% -300px, #162330 0%, #0e1a24 50%, var(--bg) 100%);
+  }
+  .wrap{max-width:1200px;margin:0 auto;padding:24px}
+  header{display:flex;gap:16px;align-items:center;margin-bottom:18px}
+  header img{height:28px}
+  header h1{font-size:18px;margin:0;font-weight:700}
+  header p{margin:2px 0 0;color:var(--muted);font-size:13px}
+  .rule{height:3px;background:linear-gradient(90deg, rgba(242,201,76,.3), rgba(242,201,76,.05) 50%, transparent);border-radius:3px;margin:10px 0 22px}
 
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Helvetica Neue", sans-serif;
-      background: radial-gradient(1200px 600px at 20% 0%, rgba(46,125,255,.18), transparent 60%),
-                  radial-gradient(900px 500px at 80% 10%, rgba(241,200,76,.16), transparent 55%),
-                  var(--bg);
-      color:var(--text);
-    }
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  @media (max-width: 920px){.grid{grid-template-columns:1fr}}
 
-    .topbar{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      padding:18px 26px;
-      border-bottom:1px solid var(--line);
-      background: linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,0));
-      gap:14px;
-      flex-wrap:wrap;
-    }
-    .topbar__left{display:flex; gap:18px; align-items:center; min-width:260px}
-    .brand-pill{
-      display:inline-flex;
-      align-items:center;
-      padding:8px 12px;
-      border:1px solid rgba(241,200,76,.35);
-      border-radius:999px;
-      color:var(--gold);
-      font-weight:800;
-      letter-spacing:.08em;
-      font-size:12px;
-      white-space:nowrap;
-    }
-    .topbar__titlewrap h1{margin:0; font-size:20px; font-weight:900}
-    .topbar__titlewrap p{margin:4px 0 0; color:var(--muted); font-size:13px}
-    .topbar__right{display:flex; gap:10px; align-items:center}
+  .panel{
+    background:linear-gradient(180deg, #13212c, #0f1922 60%);
+    border:1px solid var(--ring);
+    border-radius:14px;
+    padding:18px;
+    box-shadow:0 6px 20px rgba(0,0,0,.25);
+  }
+  .panel h2{margin:0 0 12px 0;font-size:18px}
 
-    .wrap{max-width:1200px; margin:18px auto; padding:0 18px}
-    .grid{
-      display:grid;
-      grid-template-columns: 1.05fr .95fr;
-      gap:18px;
-    }
-    @media (max-width: 980px){
-      .grid{grid-template-columns:1fr}
-    }
+  label{display:block;font-size:13px;color:var(--muted);margin:0 0 6px}
+  input, select{
+    width:100%; padding:12px 12px; border-radius:10px;
+    border:1px solid var(--ring); background:#0b141c;color:#e8f0f6; font-size:15px; outline:none;
+  }
+  input::placeholder{color:#6c8596}
 
-    .card{
-      background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      padding:18px;
-    }
+  .inputs{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media (max-width:680px){.inputs{grid-template-columns:1fr}}
 
-    h2{margin:0 0 14px; font-size:18px}
-    h3{margin:0 0 12px; font-size:16px}
-    .mt12{margin-top:12px}
-    .mt16{margin-top:16px}
-    .mt20{margin-top:20px}
-    .mt24{margin-top:24px}
+  .btn{
+    padding:12px 16px;border-radius:10px;border:1px solid transparent;
+    font-weight:700;cursor:pointer;background:#113a2a;color:#eafff5;border-color:#1f6c4e;
+  }
+  .btn.secondary{background:#1a2430;border-color:#304051;color:#d5e6f5}
+  .btn:hover{filter:brightness(1.06)}
 
-    .formgrid{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:12px;
-    }
-    @media (max-width: 680px){
-      .formgrid{grid-template-columns:1fr}
-    }
+  .tile{border:1px solid var(--ring);border-radius:12px;padding:14px;background:#0f1821}
+  .tile + .tile{margin-top:12px}
+  .tile .ttl{color:var(--muted);font-size:13px;margin-bottom:4px}
+  .tile .val{font-size:28px;font-weight:800}
 
-    .field label{
-      display:block;
-      font-size:12px;
-      color:var(--muted);
-      margin-bottom:6px;
-    }
-    .field input, .field select{
-      width:100%;
-      padding:12px 12px;
-      border-radius:12px;
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(0,0,0,.25);
-      color:var(--text);
-      outline:none;
-    }
-    .field input::placeholder{color:rgba(231,240,255,.45)}
+  .tile.accent{
+    border-color:rgba(242,201,76,.55);
+    box-shadow:0 0 0 1px rgba(242,201,76,.18) inset, 0 2px 16px rgba(0,0,0,.25);
+    background:linear-gradient(180deg,#13222d,#101a23 60%);
+  }
+  .chip{
+    display:inline-block; padding:4px 8px; border-radius:999px;
+    background:rgba(242,201,76,.15); color:#ffd76a; font-weight:700; font-size:12px;
+    border:1px solid rgba(242,201,76,.45); margin-left:6px;
+  }
 
-    .actions{margin-top:14px}
+  /* Cards productos */
+  .card{
+    position:relative;display:flex;gap:14px;align-items:center;
+    padding:14px;border-radius:12px;border:1px solid var(--ring);
+    background:linear-gradient(180deg,#121f2a,#0f1821 60%);cursor:pointer;
+    transition: border-color .15s, box-shadow .15s, background .15s;margin-top:6px;
+  }
+  .card:hover{border-color:#335068}
+  .card.selected{
+    border-color:rgba(242,201,76,.65);
+    box-shadow:0 0 0 2px rgba(242,201,76,.25) inset, 0 0 0 1px rgba(242,201,76,.2);
+    background:linear-gradient(180deg,#13222d,#0f1a24 60%);
+  }
+  .card img{width:54px;height:54px;object-fit:contain;border-radius:8px;background:#0c1620}
+  .card h3{margin:0;font-size:16px}
+  .card .meta{color:#9fb2c2;font-size:13px}
+  .card .content{padding-right:140px}
+  .ribbon{
+    position:absolute;right:12px;top:10px;
+    background:var(--gold); color:#1a1a1a; font-weight:700; font-size:12px;
+    padding:7px 12px; border-radius:999px; box-shadow:0 2px 0 0 var(--gold-2);
+  }
 
-    .row{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      align-items:flex-end;
-    }
+  .actions{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;margin-top:14px}
+  .actions .field{min-width:220px}
+  .actions .right{display:flex;gap:12px}
 
-    .btn{
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(255,255,255,.06);
-      color:var(--text);
-      padding:12px 14px;
-      border-radius:12px;
-      cursor:pointer;
-      font-weight:800;
-    }
-    .btn:hover{filter:brightness(1.06)}
-    .btn--primary{
-      background: linear-gradient(180deg, var(--primary), var(--primary2));
-      border-color: rgba(24,178,107,.35);
-    }
-    .btn--secondary{
-      background: rgba(241,200,76,.12);
-      border-color: rgba(241,200,76,.25);
-    }
-    .btn--ghost{
-      background: transparent;
-    }
-    .w100{width:100%}
-    .hint{color:rgba(231,240,255,.55); font-size:12px}
+  /* Resultados */
+  .results .head{margin:0 0 12px 0;font-size:18px}
+  .stat{margin-top:14px;padding:14px;border-radius:12px;border:1px solid var(--ring);
+        background:linear-gradient(180deg,#121f2a,#0f1821 60%);}
+  .stat .kicker{color:#9fb2c2;font-size:13px;margin-bottom:8px}
+  .stat .money{font-size:32px;font-weight:800;letter-spacing:.2px}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+  @media (max-width:680px){.row{grid-template-columns:1fr}}
+  .progress{height:10px;background:#0d2330;border:1px solid var(--ring);border-radius:999px;overflow:hidden}
+  .progress > i{display:block;height:100%;width:0;background:linear-gradient(90deg,#17b47a,#59d39f)}
+  .subtle{color:#9fb2c2;font-size:13px}
 
-    .product{
-      position:relative;
-      display:flex;
-      gap:14px;
-      align-items:center;
-      padding:14px;
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(0,0,0,.22);
-    }
-    .product__imgwrap{
-      width:84px; height:84px;
-      border-radius:14px;
-      background: rgba(255,255,255,.05);
-      border:1px solid rgba(255,255,255,.08);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      overflow:hidden;
-      flex:0 0 auto;
-    }
-    .product__imgwrap img{
-      width:100%;
-      height:100%;
-      object-fit:contain;
-    }
-    .product__name{font-weight:1000; font-size:14px}
-    .product__meta{margin-top:4px; font-size:12px}
-    .muted{color:var(--muted)}
-    .badge{
-      position:absolute;
-      right:12px; top:12px;
-      padding:7px 10px;
-      border-radius:999px;
-      background: rgba(241,200,76,.16);
-      border:1px solid rgba(241,200,76,.28);
-      color: var(--gold);
-      font-weight:1000;
-      font-size:12px;
-      white-space:nowrap;
-    }
+  .cta{margin-top:14px;border:1px solid #1b4b36;background:#0c2b1f;border-radius:12px;padding:14px}
+  .cta label{display:block;margin-bottom:8px;font-weight:700}
+  .cta input{width:100%;margin-bottom:10px;background:#072217;border-color:#145e42}
+  .cta .btn{width:100%}
 
-    .result-big{
-      padding:16px;
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(0,0,0,.25);
-    }
-    .result-big__label{color:var(--muted); font-size:13px}
-    .result-big__value{font-size:34px; font-weight:1000; margin-top:6px}
-    .result-big__sub{color:rgba(231,240,255,.70); margin-top:6px; font-size:13px}
-
-    .result-row{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:12px;
-    }
-    @media (max-width: 680px){
-      .result-row{grid-template-columns:1fr}
-    }
-    .mini{
-      padding:14px;
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(0,0,0,.22);
-    }
-    .mini__label{color:var(--muted); font-size:12px}
-    .mini__value{margin-top:6px; font-size:22px; font-weight:1000}
-
-    .progress{
-      padding:14px;
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(0,0,0,.22);
-    }
-    .progress__label{color:var(--muted); font-size:12px}
-    .bar{
-      margin-top:10px;
-      height:10px;
-      border-radius:999px;
-      background: rgba(255,255,255,.08);
-      overflow:hidden;
-    }
-    .bar__fill{
-      height:100%;
-      background: linear-gradient(90deg, rgba(24,178,107,.9), rgba(241,200,76,.9));
-      width:0%;
-    }
-    .progress__sub{margin-top:10px; color:rgba(231,240,255,.75); font-size:12px}
-
-    .callout{
-      padding:14px;
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(0,0,0,.22);
-    }
-    .callout__label{color:var(--muted); font-size:12px}
-    .callout__value{margin-top:6px; font-size:28px; font-weight:1000}
-    .callout__sub{margin-top:6px; color:rgba(231,240,255,.65); font-size:12px}
-
-    .contact{
-      padding:14px;
-      border-radius:16px;
-      border:1px solid rgba(24,178,107,.22);
-      background: rgba(24,178,107,.08);
-    }
-    .contact__label{font-size:12px; color:rgba(231,240,255,.85); margin-bottom:10px}
-    .contact input{
-      width:100%;
-      padding:12px 12px;
-      border-radius:12px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(0,0,0,.22);
-      color:var(--text);
-      margin-bottom:10px;
-    }
-  </style>
+  /* Print: solo resultados */
+  @media print{
+    body{background:#fff}
+    header,.grid > .left,.rule,.actions{display:none !important}
+    #results{border:none;box-shadow:none}
+    #results .panel{background:#fff;color:#000;border-color:#eee}
+  }
+</style>
 </head>
 <body>
-  <header class="topbar">
-    <div class="topbar__left">
-      <span class="brand-pill">ALICORP</span>
-      <div class="topbar__titlewrap">
+  <div class="wrap">
+    <header>
+      <img src="./alicorp.png" alt="Alicorp"
+           onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22160%22 height=%2240%22><rect width=%22100%25%22 height=%22100%25%22 fill=%22%23121f2a%22/><text x=%2210%22 y=%2226%22 fill=%22%23ffd76a%22 font-size=%2220%22 font-family=%22Arial%22>ALICORP</text></svg>';">
+      <div>
         <h1>Quri — tu calculadora de ahorro</h1>
-        <p>Buscando el dorado perfecto que rinda más</p>
+        <p class="subtle">Buscando el dorado perfecto que rinda más</p>
       </div>
-    </div>
-    <div class="topbar__right">
-      <button class="btn btn--ghost" id="btnClear">Limpiar datos</button>
-    </div>
-  </header>
+    </header>
+    <div class="rule"></div>
 
-  <main class="wrap">
     <div class="grid">
-
-      <!-- LEFT -->
-      <section class="card">
+      <!-- Columna izquierda -->
+      <section class="panel left">
         <h2>Tu consumo de aceite hoy</h2>
-
-        <div class="formgrid">
-          <div class="field">
-            <label for="precioBaldeActual">Precio por balde (S/)</label>
-            <input id="precioBaldeActual" type="number" inputmode="decimal" placeholder="Ingresa aquí: precio">
+        <div class="inputs">
+          <div>
+            <label>Precio por balde (S/)</label>
+            <input id="precioActual" type="number" min="0" step="0.01" placeholder="Ingresa aquí: precio">
           </div>
-
-          <div class="field">
-            <label for="litrosPorBaldeActual">Litros por balde (L)</label>
-            <input id="litrosPorBaldeActual" type="number" inputmode="decimal" value="18">
+          <div>
+            <label>Litros por balde (L)</label>
+            <input id="litrosActual" type="number" min="1" step="0.01" value="18">
           </div>
-
-          <div class="field">
-            <label for="baldesPorSemana">Baldes por semana</label>
-            <input id="baldesPorSemana" type="number" inputmode="decimal" placeholder="Ingresa aquí: baldes">
+          <div>
+            <label>Baldes por semana</label>
+            <input id="baldesSemana" type="number" min="0" step="0.01" placeholder="Ingresa aquí: baldes">
           </div>
+          <div>
+            <label>Número de locales</label>
+            <input id="locales" type="number" min="1" step="1" placeholder="Ingresa aquí: locales">
+          </div>
+        </div>
 
-          <div class="field">
-            <label for="numeroLocales">Número de locales</label>
-            <input id="numeroLocales" type="number" inputmode="numeric" placeholder="Ingresa aquí: locales">
+        <div style="height:10px"></div>
+        <button class="btn" id="btnAnalizar">Analizar tu aceite</button>
+
+        <div class="tile" id="tilePPL" style="display:none; margin-top:12px">
+          <div class="ttl">💧 Estás pagando por litro (aceite actual)</div>
+          <div class="val" id="pplActual">S/ 0.00</div>
+        </div>
+
+        <div style="height:18px"></div>
+        <h2>Elige tu aceite especializado</h2>
+        <!-- Solo Tondero -->
+        <article class="card" id="cardTondero" data-id="tondero" data-precio="130" data-litros="20" data-boost="0.5" aria-label="Tondero Frituras">
+          <img id="imgTondero" src="./tonderofrituras"
+               data-candidates="./tonderofrituras,./tonderofrituras.png,./tonderofrituras.jpg,./tonderofrituras.jpeg,./tonderofrituras.webp"
+               alt="Tondero Frituras"
+               onerror="(function(img){var list=(img.dataset.candidates||'').split(','),i=parseInt(img.dataset.i||'0',10)+1;if(i<list.length){img.dataset.i=i;img.src=list[i];}else{img.onerror=null;img.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2254%22 height=%2254%22><rect width=%22100%25%22 height=%22100%25%22 fill=%22%230c1620%22/><text x=%224%22 y=%2232%22 fill=%22%23ffd76a%22 font-size=%2210%22 font-family=%22Arial%22>TONDERO</text></svg>';}})(this)">
+          <div class="content">
+            <h3>Tondero Frituras</h3>
+            <div class="meta">S/ 130 · 20 L · Rendimiento garantizado</div>
+          </div>
+          <div class="ribbon">+50% rendimiento</div>
+        </article>
+
+        <!-- Dos recuadros: nominal vs efectivo -->
+        <div class="row" id="ppEspRow" style="display:none; margin-top:12px">
+          <div class="tile" id="tilePPLEspNom">
+            <div class="ttl">💧 Precio por litro (nominal)</div>
+            <div class="val" id="pplEspNom">S/ 0.00</div>
+          </div>
+          <div class="tile accent" id="tilePPLEspEff">
+            <div class="ttl">
+              💧 Precio por litro <strong>efectivo</strong>
+              <span class="chip">relevante</span>
+            </div>
+            <div class="val" id="pplEspEff">S/ 0.00</div>
+            <div class="subtle" id="pplEspNote">Calculado con +50% rendimiento</div>
           </div>
         </div>
 
         <div class="actions">
-          <button class="btn btn--primary w100" id="btnAnalyze">Analizar tu aceite</button>
-        </div>
-
-        <h3 class="mt24">Elige tu aceite especializado</h3>
-
-        <div class="product" aria-label="Producto seleccionado">
-          <div class="product__imgwrap">
-            <!-- OJO: esta ruta asume que tienes /images/tonderofrituras.png -->
-            <img src="images/tonderofrituras.png" alt="Tondero Frituras">
-          </div>
-          <div class="product__info">
-            <div class="product__name" id="prodName">Tondero Frituras</div>
-            <div class="product__meta">
-              <span class="muted" id="prodMeta">S/ 130 · 20 L · Rendimiento garantizado</span>
-            </div>
-          </div>
-          <div class="badge" id="prodBadge">+50% rendimiento</div>
-        </div>
-
-        <div class="row mt20">
-          <div class="field" style="min-width:220px;">
-            <label for="periodo">Periodo de análisis</label>
+          <div class="field">
+            <label>Periodo de análisis</label>
             <select id="periodo">
-              <option value="month" selected>Por mes</option>
-              <option value="year">Por año</option>
+              <option value="mes">Por mes</option>
+              <option value="semana">Por semana</option>
+              <option value="anio">Por año</option>
             </select>
           </div>
-
-          <button class="btn btn--secondary" id="btnSave">Guardar (PDF)</button>
-          <button class="btn btn--ghost" id="btnClear2">Limpiar datos</button>
+          <div class="right">
+            <button class="btn" id="btnGuardar">Guardar (PDF)</button>
+            <button class="btn secondary" id="btnLimpiar">Limpiar datos</button>
+          </div>
         </div>
-
-        <p class="hint mt12" id="status"></p>
       </section>
 
-      <!-- RIGHT -->
-      <section class="card">
-        <h2>Resultado de tu transformación</h2>
+      <!-- Columna derecha -->
+      <section class="panel results" id="results">
+        <h2 class="head">Resultado de tu transformación</h2>
 
-        <div class="result-big">
-          <div class="result-big__label">💡 Ahorro estimado</div>
-          <div class="result-big__value" id="ahorroEstimado">S/ 0</div>
-          <div class="result-big__sub" id="baldesGratis">≈ 0 baldes gratis por mes</div>
+        <div class="stat">
+          <div class="kicker">💡 Ahorro estimado</div>
+          <div class="money" id="ahorro">S/ 0</div>
+          <small id="baldesGratis" class="subtle">≈ 0 baldes gratis por mes</small>
         </div>
 
-        <div class="result-row mt16">
-          <div class="mini">
-            <div class="mini__label">📊 Gasto actual (<span id="periodLabel1">mes</span>)</div>
-            <div class="mini__value" id="gastoActual">S/ 0</div>
+        <div class="row">
+          <div class="tile">
+            <div class="ttl">📊 Gasto actual (<span id="lblPeriodo1">mes</span>)</div>
+            <div class="val" id="gastoActual">S/ 0</div>
           </div>
-          <div class="mini">
-            <div class="mini__label">🧪 Gasto con aceite especializado (<span id="periodLabel2">mes</span>)</div>
-            <div class="mini__value" id="gastoNuevo">S/ 0</div>
+          <div class="tile">
+            <div class="ttl">🧪 Gasto con aceite especializado (<span id="lblPeriodo2">mes</span>)</div>
+            <div class="val" id="gastoNuevo">S/ 0</div>
           </div>
         </div>
 
-        <div class="progress mt16">
-          <div class="progress__label">🧾 Progreso de ahorro</div>
-          <div class="bar">
-            <div class="bar__fill" id="barFill" style="width:0%"></div>
-          </div>
-          <div class="progress__sub" id="progressText">Ahorro del 0% vs. situación actual</div>
+        <div class="tile" style="margin-top:12px">
+          <div class="ttl">📈 Progreso de ahorro</div>
+          <div class="progress" aria-label="Progreso"><i id="bar" style="width:0%"></i></div>
+          <div class="subtle" id="porcentaje" style="margin-top:6px">Ahorro del 0% vs. situación actual</div>
         </div>
 
-        <div class="callout mt16">
-          <div class="callout__label">💡 ¿Hasta cuánto podrías pagar por balde sin gastar más?</div>
-          <div class="callout__value" id="precioMaximo">S/ —</div>
-          <div class="callout__sub">Precio máximo por balde del aceite seleccionado.</div>
+        <div class="tile" style="margin-top:12px">
+          <div class="ttl">💡 ¿Hasta cuánto podrías pagar por balde sin gastar más?</div>
+          <div class="val" id="pmax">S/ —</div>
+          <div class="subtle">Precio máximo por balde del aceite seleccionado.</div>
         </div>
 
-        <div class="contact mt16">
-          <div class="contact__label">🚀 ¿Quieres comprobar este rendimiento en tu cocina?</div>
-          <input id="correo" type="email" value="asesoriatecnica@alicorp.com.pe" />
-          <button class="btn btn--primary w100" id="btnCTA">Quiero recibir asesoría técnica</button>
+        <div class="cta" style="margin-top:14px">
+          <label>¿Quieres comprobar este rendimiento en tu cocina? 🚀</label>
+          <input id="email" type="email" placeholder="asesoriatecnica@alicorp.com.pe" value="asesoriatecnica@alicorp.com.pe"/>
+          <button class="btn" id="btnMail">Quiero recibir asesoría técnica</button>
         </div>
-
-        <p class="hint mt12" id="ctaStatus"></p>
       </section>
-
     </div>
-  </main>
+  </div>
 
-  <script>
-    // === TODO EN INDEX (JS EMBEBIDO) ===
+<script>
+(function(){
+  const $ = s => document.querySelector(s);
 
-    const PRODUCTO = {
-      name: "Tondero Frituras",
-      pricePerBucket: 130,      // S/
-      litersPerBucket: 20,      // L
-      rendimientoPlus: 0.50     // +50% => consumes 1/(1+0.5)
-    };
+  // Inputs
+  const precioActual = $('#precioActual');
+  const litrosActual = $('#litrosActual');
+  const baldesSemana = $('#baldesSemana');
+  const locales = $('#locales');
+  const periodo = $('#periodo');
 
-    const $ = (id) => document.getElementById(id);
+  // Tiles - actual
+  const tilePPL = $('#tilePPL');
+  const pplActualEl = $('#pplActual');
 
-    const precioBaldeActualEl = $("precioBaldeActual");
-    const litrosPorBaldeActualEl = $("litrosPorBaldeActual");
-    const baldesPorSemanaEl = $("baldesPorSemana");
-    const numeroLocalesEl = $("numeroLocales");
-    const periodoEl = $("periodo");
+  // Producto (único)
+  const cardTondero = $('#cardTondero');
 
-    const ahorroEstimadoEl = $("ahorroEstimado");
-    const baldesGratisEl = $("baldesGratis");
-    const gastoActualEl = $("gastoActual");
-    const gastoNuevoEl = $("gastoNuevo");
-    const barFillEl = $("barFill");
-    const progressTextEl = $("progressText");
-    const precioMaximoEl = $("precioMaximo");
-    const statusEl = $("status");
+  // Tiles - especializado (dos recuadros)
+  const ppEspRow = $('#ppEspRow');
+  const pplEspNom = $('#pplEspNom');
+  const pplEspEff = $('#pplEspEff');
+  const pplEspNote = $('#pplEspNote');
 
-    const periodLabel1El = $("periodLabel1");
-    const periodLabel2El = $("periodLabel2");
+  // Resultados
+  const ahorro = $('#ahorro');
+  const gastoActualEl = $('#gastoActual');
+  const gastoNuevoEl = $('#gastoNuevo');
+  const pmaxEl = $('#pmax');
+  const bar = $('#bar');
+  const pctTxt = $('#porcentaje');
+  const baldesGratis = $('#baldesGratis');
+  const lbl1 = $('#lblPeriodo1');
+  const lbl2 = $('#lblPeriodo2');
 
-    const btnAnalyze = $("btnAnalyze");
-    const btnClear = $("btnClear");
-    const btnClear2 = $("btnClear2");
-    const btnSave = $("btnSave");
-    const btnCTA = $("btnCTA");
+  function fmt(n){ return isFinite(n)? n.toLocaleString('es-PE',{minimumFractionDigits:2,maximumFractionDigits:2}) : '—'; }
+  function fmt0(n){ return isFinite(n)? Math.round(n).toLocaleString('es-PE',{maximumFractionDigits:0}) : '—'; } // 0 decimales
+  function fmtInt(n){ return isFinite(n)? Math.round(n).toLocaleString('es-PE') : '—'; }
 
-    const ctaStatusEl = $("ctaStatus");
+  function weeksFactor(){
+    if(periodo.value==='semana') return 1;
+    if(periodo.value==='mes') return 4.33;
+    return 52;
+  }
+  function periodoLabel(){
+    return periodo.value==='semana'?'semana':(periodo.value==='mes'?'mes':'año');
+  }
 
-    $("prodName").textContent = PRODUCTO.name;
-    $("prodMeta").textContent = `S/ ${PRODUCTO.pricePerBucket} · ${PRODUCTO.litersPerBucket} L · Rendimiento garantizado`;
-    $("prodBadge").textContent = `+${Math.round(PRODUCTO.rendimientoPlus*100)}% rendimiento`;
+  function currentCalc(selected){
+    const P0 = parseFloat(precioActual.value);
+    const L0 = parseFloat(litrosActual.value);
+    const B = parseFloat(baldesSemana.value);
+    const N = parseFloat(locales.value);
+    const f = weeksFactor();
 
-    function money(n){
-      if (!isFinite(n)) return "S/ 0";
-      return "S/ " + Math.round(n).toLocaleString("es-PE");
+    if(!isFinite(P0)||!isFinite(L0)||!isFinite(B)||!isFinite(N)){
+      return {ready:false,P0,L0,B,N,f};
     }
 
-    function getMultiplier(){
-      // month: 4.33 semanas aprox. / year: 52 semanas
-      return periodoEl.value === "year" ? 52 : 4.33;
-    }
+    const gastoActual = P0*B*N*f;
 
-    function setPeriodLabels(){
-      const p = periodoEl.value === "year" ? "año" : "mes";
-      periodLabel1El.textContent = p;
-      periodLabel2El.textContent = p;
-    }
+    let gastoNuevo = NaN, ahorro = NaN, pct = 0, pmax = NaN, baldesMensualesGratis = 0, B1=NaN, prod=null;
 
-    function readInputs(){
-      return {
-        precioBaldeActual: Number(precioBaldeActualEl.value),
-        litrosPorBaldeActual: Number(litrosPorBaldeActualEl.value),
-        baldesPorSemana: Number(baldesPorSemanaEl.value),
-        numeroLocales: Number(numeroLocalesEl.value),
+    if(selected){
+      prod = {
+        id: selected.dataset.id,
+        precio: parseFloat(selected.dataset.precio),
+        litros: parseFloat(selected.dataset.litros),
+        boost: parseFloat(selected.dataset.boost),
+        nombre: selected.querySelector('h3').textContent.trim()
       };
+      const effLit = prod.litros*(1+prod.boost);
+      B1 = (B*L0)/effLit; // baldes/sem con especializado
+      gastoNuevo = prod.precio*B1*N*f;
+      ahorro = Math.max(0, gastoActual - gastoNuevo);
+      pct = gastoActual>0 ? (ahorro/gastoActual)*100 : 0;
+      const weeksPerMonth = 4.33;
+      baldesMensualesGratis = Math.max(0,(B - B1)*N*weeksPerMonth);
+      pmax = (B>0 && B1>0) ? (P0*B)/B1 : NaN;
     }
 
-    function validate(v){
-      const errs = [];
-      if (!(v.precioBaldeActual > 0)) errs.push("precio por balde");
-      if (!(v.litrosPorBaldeActual > 0)) errs.push("litros por balde");
-      if (!(v.baldesPorSemana > 0)) errs.push("baldes por semana");
-      if (!(v.numeroLocales > 0)) errs.push("número de locales");
-      return errs;
+    return {ready:true,P0,L0,B,N,f,gastoActual,gastoNuevo,ahorro,pct,pmax,baldesMensualesGratis,prod};
+  }
+
+  function render(selected){
+    lbl1.textContent = periodoLabel();
+    lbl2.textContent = periodoLabel();
+
+    const c = currentCalc(selected);
+
+    // Precio por litro actual (si presionaron analizar) - mantiene 2 decimales
+    if(tilePPL.dataset.show === "1" && isFinite(c.P0) && isFinite(c.L0)){
+      const ppl = c.P0 / c.L0;
+      pplActualEl.textContent = 'S/ ' + fmt(ppl);
+      tilePPL.style.display = '';
     }
 
-    function renderEmpty(msg){
-      gastoActualEl.textContent = "S/ 0";
-      gastoNuevoEl.textContent = "S/ 0";
-      ahorroEstimadoEl.textContent = "S/ 0";
-      baldesGratisEl.textContent = "≈ 0 baldes gratis por " + (periodoEl.value === "year" ? "año" : "mes");
-      barFillEl.style.width = "0%";
-      progressTextEl.textContent = "Ahorro del 0% vs. situación actual";
-      precioMaximoEl.textContent = "S/ —";
-      statusEl.textContent = msg || "";
+    // Resultados (0 decimales)
+    if(!c.ready){
+      ahorro.textContent = 'S/ 0';
+      gastoActualEl.textContent = 'S/ 0';
+      gastoNuevoEl.textContent = 'S/ 0';
+      pmaxEl.textContent = 'S/ —';
+      bar && (bar.style.width = '0%');
+      pctTxt.textContent = 'Ahorro del 0% vs. situación actual';
+      baldesGratis.textContent = '≈ 0 baldes gratis por mes';
+      ppEspRow.style.display = 'none';
+      return;
     }
 
-    function calc(){
-      setPeriodLabels();
+    gastoActualEl.textContent = 'S/ '+fmt0(c.gastoActual);
 
-      const mult = getMultiplier();
-      const v = readInputs();
-      const errs = validate(v);
-
-      if (errs.length){
-        renderEmpty(`Completa: ${errs.join(", ")}.`);
-        return;
-      }
-
-      statusEl.textContent = "";
-
-      // Consumo actual por periodo (baldes)
-      const baldesPeriodo = v.baldesPorSemana * mult * v.numeroLocales;
-
-      // Litros consumidos hoy por periodo
-      const litrosPeriodo = baldesPeriodo * v.litrosPorBaldeActual;
-
-      // Litros requeridos con especializado (rinde más => necesitas menos litros)
-      const litrosPeriodoNuevo = litrosPeriodo / (1 + PRODUCTO.rendimientoPlus);
-
-      // Baldes especializados requeridos (según litros por balde del producto)
-      const baldesPeriodoNuevo = litrosPeriodoNuevo / PRODUCTO.litersPerBucket;
-
-      // Gastos
-      const gastoActual = baldesPeriodo * v.precioBaldeActual;
-      const gastoNuevo = baldesPeriodoNuevo * PRODUCTO.pricePerBucket;
-
-      const ahorro = gastoActual - gastoNuevo;
-
-      gastoActualEl.textContent = money(gastoActual);
-      gastoNuevoEl.textContent = money(gastoNuevo);
-      ahorroEstimadoEl.textContent = money(Math.max(0, ahorro));
-
-      // Baldes gratis
-      const baldesGratis = PRODUCTO.pricePerBucket > 0 ? Math.max(0, ahorro) / PRODUCTO.pricePerBucket : 0;
-      const label = periodoEl.value === "year" ? "año" : "mes";
-      baldesGratisEl.textContent = `≈ ${baldesGratis.toFixed(1)} baldes gratis por ${label}`;
-
-      // % ahorro vs actual
-      const pct = gastoActual > 0 ? (ahorro / gastoActual) : 0;
-      const pctShown = Math.max(0, pct);
-      const pctClamped = Math.max(0, Math.min(0.6, pctShown)); // visual cap
-      barFillEl.style.width = `${pctClamped * 100}%`;
-      progressTextEl.textContent = `Ahorro del ${(pctShown * 100).toFixed(0)}% vs. situación actual`;
-
-      // Precio máximo por balde especializado para no gastar más
-      const precioMax = baldesPeriodoNuevo > 0 ? (gastoActual / baldesPeriodoNuevo) : NaN;
-      precioMaximoEl.textContent = isFinite(precioMax) ? ("S/ " + precioMax.toFixed(0)) : "S/ —";
+    if(selected && isFinite(c.gastoNuevo)){
+      gastoNuevoEl.textContent = 'S/ '+fmt0(c.gastoNuevo);
+      ahorro.textContent = 'S/ '+fmt0(c.ahorro);
+      const pct = Math.max(0,Math.round(c.pct));
+      pctTxt.textContent = `Ahorro del ${pct}% vs. situación actual`;
+      bar && (bar.style.width = Math.min(100, Math.max(0,c.pct))+'%');
+      baldesGratis.textContent = `≈ ${fmt0(c.baldesMensualesGratis)} baldes gratis por mes`;
+      pmaxEl.textContent = isFinite(c.pmax) ? 'S/ '+fmt0(c.pmax) : 'S/ —';
+    }else{
+      gastoNuevoEl.textContent = 'S/ 0';
+      ahorro.textContent = 'S/ 0';
+      pctTxt.textContent = 'Ahorro del 0% vs. situación actual';
+      bar && (bar.style.width = '0%');
+      pmaxEl.textContent = 'S/ —';
+      baldesGratis.textContent = '≈ 0 baldes gratis por mes';
     }
 
-    function clearForm(){
-      precioBaldeActualEl.value = "";
-      baldesPorSemanaEl.value = "";
-      numeroLocalesEl.value = "";
-      // mantiene litrosPorBaldeActual por defecto
-      calc();
+    // Precio por litro del especializado (dos tiles, mantienen 2 decimales)
+    if(selected){
+      const precio = parseFloat(selected.dataset.precio);
+      const litros = parseFloat(selected.dataset.litros);
+      const boost = parseFloat(selected.dataset.boost);
+      const pplNominal = precio / litros;
+      const pplEff = precio / (litros*(1+boost));
+      pplEspNom.textContent = 'S/ ' + fmt(pplNominal);
+      pplEspEff.textContent = 'S/ ' + fmt(pplEff);
+      pplEspNote.textContent = `Calculado con +${Math.round(boost*100)}% rendimiento`;
+      ppEspRow.style.display = '';
+    }else{
+      ppEspRow.style.display = 'none';
     }
+  }
 
-    btnAnalyze.addEventListener("click", calc);
-    btnClear.addEventListener("click", clearForm);
-    btnClear2.addEventListener("click", clearForm);
-    periodoEl.addEventListener("change", calc);
+  // Eventos
+  document.getElementById('btnAnalizar').addEventListener('click', ()=>{
+    tilePPL.dataset.show = "1";
+    render(cardTondero.classList.contains('selected') ? cardTondero : null);
+  });
 
-    [precioBaldeActualEl, litrosPorBaldeActualEl, baldesPorSemanaEl, numeroLocalesEl].forEach(i => {
-      i.addEventListener("input", calc);
-    });
+  cardTondero.addEventListener('click', ()=>{
+    const sel = cardTondero.classList.toggle('selected');
+    render(sel ? cardTondero : null);
+  });
 
-    btnSave.addEventListener("click", () => window.print());
+  [precioActual, litrosActual, baldesSemana, locales, periodo].forEach(el=>{
+    el.addEventListener('input', ()=>render(cardTondero.classList.contains('selected') ? cardTondero : null));
+    el.addEventListener('change', ()=>render(cardTondero.classList.contains('selected') ? cardTondero : null));
+  });
 
-    btnCTA.addEventListener("click", () => {
-      const correo = $("correo")?.value?.trim() || "";
-      const ok = correo.includes("@") && correo.includes(".");
-      ctaStatusEl.textContent = ok
-        ? "Listo. Te contactaremos para asesoría técnica."
-        : "Revisa el correo antes de enviar.";
-    });
+  // Acciones
+  document.getElementById('btnLimpiar').addEventListener('click', ()=>{
+    precioActual.value = '';
+    baldesSemana.value = '';
+    locales.value = '';
+    litrosActual.value = 18;
+    tilePPL.dataset.show = "0";
+    tilePPL.style.display = 'none';
+    ppEspRow.style.display = 'none';
+    cardTondero.classList.remove('selected');
+    render(null);
+  });
 
-    // init
-    renderEmpty("Completa los campos para ver el ahorro.");
-  </script>
+  document.getElementById('btnGuardar').addEventListener('click', ()=>window.print());
+
+  document.getElementById('btnMail').addEventListener('click', ()=>{
+    const selected = cardTondero.classList.contains('selected') ? cardTondero : null;
+    const c = currentCalc(selected);
+    const correo = (document.getElementById('email').value || 'asesoriatecnica@alicorp.com.pe').trim();
+    const asunto = 'Consulta técnica — Quri';
+    const sep = '\r\n';
+    const prod = selected ? `Tondero Frituras (S/ ${fmt(parseFloat(selected.dataset.precio))} · ${selected.dataset.litros} L · +50% rendimiento)` : '—';
+    const cuerpo =
+`Hola equipo de Asesoría Técnica,${sep}${sep}Quiero validar el rendimiento en mi cocina. Análisis desde Quri:${sep}${sep}— Consumo actual${sep}   • Precio por balde: S/ ${fmt(c.P0)}${sep}   • Litros por balde: ${fmt(c.L0)} L${sep}   • Baldes por semana: ${fmt(c.B)}${sep}   • N° de locales: ${fmt(c.N)}${sep}   • Periodo: ${periodoLabel()}${sep}${sep}— Aceite especializado evaluado${sep}   • Producto: ${prod}${sep}${sep}— Resultados${sep}   • Gasto actual (${periodoLabel()}): S/ ${fmt(c.gastoActual)}${sep}   • Gasto con especializado (${periodoLabel()}): S/ ${fmt(c.gastoNuevo)}${sep}   • Ahorro estimado: S/ ${fmt(c.ahorro)}${sep}   • Ahorro vs. actual: ${Math.max(0,Math.round(c.pct||0))}%${sep}   • Máximo precio por balde para no gastar más: S/ ${isFinite(c.pmax)?fmt(c.pmax):'—'}${sep}${sep}Gracias.`;
+    const mailto = `mailto:${encodeURIComponent(correo)}?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(cuerpo)}`;
+    window.location.href = mailto;
+  });
+
+  // Inicial
+  render(null);
+})();
+</script>
 </body>
 </html>
