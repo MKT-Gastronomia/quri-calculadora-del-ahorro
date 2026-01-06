@@ -1,46 +1,70 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8">
-  <title>Quri — tu calculadora de ahorro</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Calculadora de Ahorro | MKT Gastronomía</title>
+  <meta name="description" content="Calculadora de ahorro por rendimiento de aceite." />
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
-<header>
-  <h1>Quri — tu calculadora de ahorro</h1>
-  <p>Buscando el dorado perfecto que rinda más</p>
+<header class="header">
+  <div class="brand">
+    <div class="brand__logo">✦</div>
+    <div>
+      <div class="brand__title">Equipo de Negocio — Gastronomía</div>
+      <div class="brand__subtitle">Calculadora de Ahorro (versión de trabajo)</div>
+    </div>
+  </div>
+  <div class="header__actions">
+    <button id="resetBtn">Reset</button>
+  </div>
 </header>
 
-<div class="wrap">
-  <div class="grid">
+<main class="container grid">
 
-    <div class="card">
-      <label>Precio por balde (S/)</label>
-      <input id="precio" placeholder="Ej: 110">
+<section class="card">
+  <h2>Inputs</h2>
 
-      <label style="margin-top:10px">Baldes por semana</label>
-      <input id="baldes" placeholder="Ej: 5">
+  <label>Precio aceite actual (S/ por litro)</label>
+  <input id="priceCurrent" type="number" value="12">
 
-      <button style="margin-top:14px" onclick="calc()">Analizar tu aceite</button>
+  <label>Precio aceite propuesto (S/ por litro)</label>
+  <input id="priceNew" type="number" value="14">
 
-      <div class="product">
-        <img src="images/tonderofrituras.png">
-        <div>
-          <strong>Tondero Frituras</strong><br>
-          <small>20 L · +50% rendimiento</small>
-        </div>
-        <div class="badge">+50%</div>
-      </div>
-    </div>
+  <label>Consumo (litros por día)</label>
+  <input id="litersDay" type="number" value="20">
 
-    <div class="card">
-      <p>Ahorro estimado mensual</p>
-      <div id="ahorro" class="result">S/ 0</div>
-    </div>
+  <label>Días operativos al mes</label>
+  <input id="daysMonth" type="number" value="26">
 
+  <label>Mejora de rendimiento (%)</label>
+  <input id="improvement" type="number" value="25">
+</section>
+
+<section class="card">
+  <h2>Resultados</h2>
+
+  <div class="kpi">
+    <span>Costo mensual actual</span>
+    <strong id="costCurrent">—</strong>
   </div>
-</div>
+
+  <div class="kpi">
+    <span>Costo mensual propuesto</span>
+    <strong id="costNew">—</strong>
+  </div>
+
+  <div class="kpi highlight">
+    <span>Ahorro mensual estimado</span>
+    <strong id="savings">—</strong>
+  </div>
+
+  <p id="summary" class="summary"></p>
+</section>
+
+</main>
 
 <script src="app.js"></script>
 </body>
