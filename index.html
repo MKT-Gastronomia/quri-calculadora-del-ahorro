@@ -1,138 +1,47 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="utf-8">
   <title>Quri — tu calculadora de ahorro</title>
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header class="topbar">
-    <div class="topbar__left">
-      <span class="brand-pill">ALICORP</span>
-      <div class="topbar__titlewrap">
-        <h1>Quri — tu calculadora de ahorro</h1>
-        <p>Buscando el dorado perfecto que rinda más</p>
+
+<header>
+  <h1>Quri — tu calculadora de ahorro</h1>
+  <p>Buscando el dorado perfecto que rinda más</p>
+</header>
+
+<div class="wrap">
+  <div class="grid">
+
+    <div class="card">
+      <label>Precio por balde (S/)</label>
+      <input id="precio" placeholder="Ej: 110">
+
+      <label style="margin-top:10px">Baldes por semana</label>
+      <input id="baldes" placeholder="Ej: 5">
+
+      <button style="margin-top:14px" onclick="calc()">Analizar tu aceite</button>
+
+      <div class="product">
+        <img src="images/tonderofrituras.png">
+        <div>
+          <strong>Tondero Frituras</strong><br>
+          <small>20 L · +50% rendimiento</small>
+        </div>
+        <div class="badge">+50%</div>
       </div>
     </div>
 
-    <div class="topbar__right">
-      <button class="btn btn--ghost" id="btnClear">Limpiar datos</button>
+    <div class="card">
+      <p>Ahorro estimado mensual</p>
+      <div id="ahorro" class="result">S/ 0</div>
     </div>
-  </header>
 
-  <main class="wrap">
-    <div class="grid">
-      <!-- LEFT -->
-      <section class="card">
-        <h2>Tu consumo de aceite hoy</h2>
+  </div>
+</div>
 
-        <div class="formgrid">
-          <div class="field">
-            <label for="precioBaldeActual">Precio por balde (S/)</label>
-            <input id="precioBaldeActual" type="number" inputmode="decimal" placeholder="Ingresa aquí: precio" value="">
-          </div>
-
-          <div class="field">
-            <label for="litrosPorBaldeActual">Litros por balde (L)</label>
-            <input id="litrosPorBaldeActual" type="number" inputmode="decimal" value="18">
-          </div>
-
-          <div class="field">
-            <label for="baldesPorSemana">Baldes por semana</label>
-            <input id="baldesPorSemana" type="number" inputmode="decimal" placeholder="Ingresa aquí: baldes" value="">
-          </div>
-
-          <div class="field">
-            <label for="numeroLocales">Número de locales</label>
-            <input id="numeroLocales" type="number" inputmode="numeric" placeholder="Ingresa aquí: locales" value="">
-          </div>
-        </div>
-
-        <div class="actions">
-          <button class="btn btn--primary" id="btnAnalyze">Analizar tu aceite</button>
-        </div>
-
-        <h3 class="mt24">Elige tu aceite especializado</h3>
-
-        <div class="product" id="productCard" role="button" tabindex="0" aria-label="Seleccionar Tondero Frituras">
-          <div class="product__imgwrap">
-            <img src="images/tonderofrituras.png" alt="Tondero Frituras" />
-          </div>
-          <div class="product__info">
-            <div class="product__name">Tondero Frituras</div>
-            <div class="product__meta">
-              <span class="muted" id="prodPriceText">S/ 130 · 20 L</span>
-              <span class="muted">· Rendimiento garantizado</span>
-            </div>
-          </div>
-          <div class="badge">+50% rendimiento</div>
-        </div>
-
-        <div class="row mt20">
-          <div class="field field--inline">
-            <label for="periodo">Periodo de análisis</label>
-            <select id="periodo">
-              <option value="month" selected>Por mes</option>
-              <option value="year">Por año</option>
-            </select>
-          </div>
-
-          <button class="btn btn--secondary" id="btnSave">Guardar (PDF)</button>
-          <button class="btn btn--ghost" id="btnClear2">Limpiar datos</button>
-        </div>
-
-        <p class="hint mt12">
-          * “Guardar (PDF)” abre la impresión del navegador (Ctrl+P) para exportar a PDF.
-        </p>
-      </section>
-
-      <!-- RIGHT -->
-      <section class="card">
-        <h2>Resultado de tu transformación</h2>
-
-        <div class="result-big">
-          <div class="result-big__label">💡 Ahorro estimado</div>
-          <div class="result-big__value" id="ahorroEstimado">S/ 0</div>
-          <div class="result-big__sub" id="baldesGratis">≈ 0 baldes gratis por mes</div>
-        </div>
-
-        <div class="result-row mt16">
-          <div class="mini">
-            <div class="mini__label">📊 Gasto actual (<span id="periodLabel1">mes</span>)</div>
-            <div class="mini__value" id="gastoActual">S/ 0</div>
-          </div>
-          <div class="mini">
-            <div class="mini__label">🧪 Gasto con aceite especializado (<span id="periodLabel2">mes</span>)</div>
-            <div class="mini__value" id="gastoNuevo">S/ 0</div>
-          </div>
-        </div>
-
-        <div class="progress mt16">
-          <div class="progress__label">🧾 Progreso de ahorro</div>
-          <div class="bar">
-            <div class="bar__fill" id="barFill" style="width:0%"></div>
-          </div>
-          <div class="progress__sub" id="progressText">Ahorro del 0% vs. situación actual</div>
-        </div>
-
-        <div class="callout mt16">
-          <div class="callout__label">💡 ¿Hasta cuánto podrías pagar por balde sin gastar más?</div>
-          <div class="callout__value" id="precioMaximo">S/ —</div>
-          <div class="callout__sub">Precio máximo por balde del aceite seleccionado.</div>
-        </div>
-
-        <div class="contact mt16">
-          <div class="contact__label">🚀 ¿Quieres comprobar este rendimiento en tu cocina?</div>
-          <input id="correo" type="email" value="asesoriatecnica@alicorp.com.pe" />
-          <button class="btn btn--primary w100" id="btnCTA">Quiero recibir asesoría técnica</button>
-        </div>
-
-        <p class="hint mt12" id="status"></p>
-      </section>
-    </div>
-  </main>
-
-  <script src="app.js"></script>
+<script src="app.js"></script>
 </body>
 </html>
