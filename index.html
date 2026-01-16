@@ -155,7 +155,12 @@
     <label>Razón social</label>
     <input id="clienteRazonSocial" type="text" placeholder="Ej: Restaurante S.A.C.">
   </div>
-
+  
+  <div>
+    <label>Nombre DEX</label>
+    <input id="clienteDEX" type="text" placeholder="Ej: Juan Pérez">
+  </div>
+  
   <div>
     <label>Marca actual</label>
     <input id="clienteMarcaActual" type="text" placeholder="Ej: Aceite X">
@@ -165,6 +170,22 @@
     <label>Teléfono de contacto</label>
     <input id="clienteTelefono" type="tel" placeholder="Ej: 999 888 777">
   </div>
+
+   <div>
+    <label>Dirección</label>
+    <input id="clienteDireccion" type="text" placeholder="Ej: Av. La Marina 123">
+  </div>
+
+  <div>
+    <label>Distrito</label>
+    <input id="clienteDistrito" type="text" placeholder="Ej: San Miguel">
+  </div>
+
+  <div>
+    <label>Solicitado por</label>
+    <input id="clienteSolicitadoPor" type="text" placeholder="Ej: Administrador / Dueño">
+  </div>  
+  
 </div>
 
 <div style="height:18px"></div>
@@ -279,7 +300,7 @@
 
         <div class="cta" style="margin-top:14px">
           <label>¿Quieres comprobar este rendimiento en tu cocina? 🚀</label>
-          <input id="email" type="email" placeholder="asesoriatecnica@alicorp.com.pe" value="asesoriatecnica@alicorp.com.pe"/>
+          <input id="email" type="email" placeholder="CParaguayC@alicorp.com.pe" value="CParaguayC@alicorp.com.pe"/>
           <button class="btn" id="btnMail">Quiero recibir asesoría técnica</button>
         </div>
       </section>
@@ -465,7 +486,7 @@
   document.getElementById('btnMail').addEventListener('click', ()=>{
     const selected = cardTondero.classList.contains('selected') ? cardTondero : null;
     const c = currentCalc(selected);
-    const correo = (document.getElementById('email').value || 'asesoriatecnica@alicorp.com.pe').trim();
+    const correo = (document.getElementById('email').value || 'CParaguayC@alicorp.com.pe').trim();
     const asunto = 'Consulta técnica — Quri';
     const sep = '\r\n';
     const prod = selected ? `Tondero Frituras (S/ ${fmt(parseFloat(selected.dataset.precio))} · ${selected.dataset.litros} L · +50% rendimiento)` : '—';
@@ -473,8 +494,13 @@
       `Hola equipo de Asesoría Técnica,${sep}${sep}Quiero validar el rendimiento en mi cocina. Análisis desde Quri:${sep}${sep}— Datos del cliente
    • Código: ${document.getElementById('clienteCodigo').value || '—'}
    • Razón social: ${document.getElementById('clienteRazonSocial').value || '—'}
+   • Nombre DEX: ${document.getElementById('clienteDEX').value || '—'}
    • Marca actual: ${document.getElementById('clienteMarcaActual').value || '—'}
    • Teléfono: ${document.getElementById('clienteTelefono').value || '—'}
+   • Dirección: ${document.getElementById('clienteDireccion').value || '—'}
+   • Distrito: ${document.getElementById('clienteDistrito').value || '—'}
+   • Solicitado por: ${document.getElementById('clienteSolicitadoPor').value || '—'}
+
 
 — Consumo actual${sep}   • Precio por balde: S/ ${fmt(c.P0)}${sep}   • Litros por balde: ${fmt(c.L0)} L${sep}   • Baldes por semana: ${fmt(c.B)}${sep}   • N° de locales: ${fmt(c.N)}${sep}   • Periodo: ${periodoLabel()}${sep}${sep}— Aceite especializado evaluado${sep}   • Producto: ${prod}${sep}${sep}— Resultados${sep}   • Gasto actual (${periodoLabel()}): S/ ${fmt(c.gastoActual)}${sep}   • Gasto con especializado (${periodoLabel()}): S/ ${fmt(c.gastoNuevo)}${sep}   • Ahorro estimado: S/ ${fmt(c.ahorro)}${sep}   • Ahorro vs. actual: ${Math.max(0,Math.round(c.pct||0))}%${sep}   • Máximo precio por balde para no gastar más: S/ ${isFinite(c.pmax)?fmt(c.pmax):'—'}${sep}${sep}Gracias.`;
     const mailto = `mailto:${encodeURIComponent(correo)}?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(cuerpo)}`;
