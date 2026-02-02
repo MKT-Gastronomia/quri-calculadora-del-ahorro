@@ -246,12 +246,6 @@
           <div class="subtle" id="porcentaje" style="margin-top:6px">Ahorro del 0% vs. situación actual</div>
         </div>
 
-        <div class="tile" style="margin-top:12px">
-          <div class="ttl">💡 ¿Hasta cuánto podrías pagar por balde sin gastar más?</div>
-          <div class="val" id="pmax">S/ —</div>
-          <div class="subtle">Precio máximo por balde del aceite seleccionado.</div>
-        </div>
-
         <div class="tile" style="margin-top:12px" id="ctaAsesoria">
   <div class="ttl">🧑‍🍳 ¿El cliente quiere recibir asesoría técnica?</div>
   <div class="subtle" style="margin-top:6px">Si marcas “Sí”, se abrirá un formulario para registrar el caso.</div>
@@ -504,6 +498,20 @@
     tilePPL.style.display = 'none';
     ppEspRow.style.display = 'none';
     cardTondero.classList.remove('selected');
+    const panelDatosCliente = document.getElementById('panelDatosCliente');
+const btnToggleAsesoria = document.getElementById('btnToggleAsesoria');
+const btnNoAsesoria = document.getElementById('btnNoAsesoria');
+
+function showAsesoria(show){
+  if (!panelDatosCliente) return;
+  panelDatosCliente.style.display = show ? '' : 'none';
+  if(show){
+    panelDatosCliente.scrollIntoView({behavior:'smooth', block:'start'});
+  }
+}
+
+btnToggleAsesoria?.addEventListener('click', ()=>showAsesoria(true));
+btnNoAsesoria?.addEventListener('click', ()=>showAsesoria(false));
     render(null);
   });
 
