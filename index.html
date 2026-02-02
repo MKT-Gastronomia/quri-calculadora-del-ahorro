@@ -143,52 +143,6 @@
     <div class="grid">
       <!-- Columna izquierda -->
       <section class="panel left">
-        <h2>Datos del cliente</h2>
-
-<div class="inputs">
-  <div>
-    <label>Código de cliente</label>
-    <input id="clienteCodigo" type="text" placeholder="Ej: 001234">
-  </div>
-
-  <div>
-    <label>Razón social</label>
-    <input id="clienteRazonSocial" type="text" placeholder="Ej: Restaurante S.A.C.">
-  </div>
-  
-  <div>
-    <label>Nombre DEX</label>
-    <input id="clienteDEX" type="text" placeholder="Ej: Juan Pérez">
-  </div>
-  
-  <div>
-    <label>Marca actual</label>
-    <input id="clienteMarcaActual" type="text" placeholder="Ej: Aceite X">
-  </div>
-
-  <div>
-    <label>Teléfono de contacto</label>
-    <input id="clienteTelefono" type="tel" placeholder="Ej: 999 888 777">
-  </div>
-
-   <div>
-    <label>Dirección</label>
-    <input id="clienteDireccion" type="text" placeholder="Ej: Av. La Marina 123">
-  </div>
-
-  <div>
-    <label>Distrito</label>
-    <input id="clienteDistrito" type="text" placeholder="Ej: San Miguel">
-  </div>
-
-  <div>
-    <label>Solicitado por</label>
-    <input id="clienteSolicitadoPor" type="text" placeholder="Ej: Nombre Vendedor">
-  </div>  
-  
-</div>
-
-<div style="height:18px"></div>
 
         <h2>Tu consumo de aceite hoy</h2>
         <div class="inputs">
@@ -297,6 +251,78 @@
           <div class="val" id="pmax">S/ —</div>
           <div class="subtle">Precio máximo por balde del aceite seleccionado.</div>
         </div>
+
+        <div class="tile" style="margin-top:12px" id="ctaAsesoria">
+  <div class="ttl">🧑‍🍳 ¿El cliente quiere recibir asesoría técnica?</div>
+  <div class="subtle" style="margin-top:6px">Si marcas “Sí”, se abrirá un formulario para registrar el caso.</div>
+
+  <div style="display:flex; gap:10px; margin-top:12px; flex-wrap:wrap">
+    <button class="btn" id="btnToggleAsesoria" type="button">Sí, registrar asesoría</button>
+    <button class="btn secondary" id="btnNoAsesoria" type="button">No por ahora</button>
+  </div>
+</div>
+
+<div class="panel" id="panelDatosCliente" style="display:none; margin-top:12px">
+  <h2>Datos para asesoría técnica</h2>
+
+  <div class="inputs">
+    <div>
+      <label>Código de cliente</label>
+      <input id="clienteCodigo" type="text" placeholder="Ej: 001234">
+    </div>
+
+    <div>
+      <label>Razón social</label>
+      <input id="clienteRazonSocial" type="text" placeholder="Ej: Restaurante S.A.C.">
+    </div>
+
+    <div>
+      <label>Marca actual</label>
+      <input id="clienteMarcaActual" type="text" placeholder="Ej: Aceite X">
+    </div>
+
+    <div>
+      <label>Teléfono de contacto</label>
+      <input id="clienteTelefono" type="tel" placeholder="Ej: 999 888 777">
+    </div>
+
+    <div>
+      <label>Nombre DEX</label>
+      <input id="clienteDEX" type="text" placeholder="Ej: Juan Pérez">
+    </div>
+
+    <div>
+      <label>Solicitado por</label>
+      <input id="clienteSolicitadoPor" type="text" placeholder="Ej: Administrador / Dueño">
+    </div>
+
+    <div>
+      <label>Dirección</label>
+      <input id="clienteDireccion" type="text" placeholder="Ej: Av. La Marina 123">
+    </div>
+
+    <div>
+      <label>Distrito</label>
+      <input id="clienteDistrito" type="text" placeholder="Ej: San Miguel">
+    </div>
+  </div>
+
+  <!-- ✅ Checkboxes -->
+  <div style="display:grid; gap:10px; margin-top:12px;">
+    <label style="display:flex; align-items:center; gap:10px; margin:0; font-weight:600;">
+      <input id="chkLimpieza" type="checkbox" style="width:auto; transform:scale(1.1);">
+      Asesoría potencial en limpieza
+    </label>
+
+    <label style="display:flex; align-items:center; gap:10px; margin:0; font-weight:600;">
+      <input id="chkSalsas" type="checkbox" style="width:auto; transform:scale(1.1);">
+      Asesoría potencial en salsas
+    </label>
+  </div>
+
+  <div style="height:12px"></div>
+  <button class="btn" id="btnEnviarAsesoria" type="button">Guardar solicitud</button>
+</div>
 
         <div class="cta" style="margin-top:14px">
           <label>¿Quieres comprobar este rendimiento en tu cocina? 🚀</label>
