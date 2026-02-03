@@ -564,6 +564,62 @@ btnNoAsesoria?.addEventListener('click', ()=>showAsesoria(false));
   // Inicial
   render(null);
 })();
+// Helper formateo
+function formatPEN(value) {
+  if (!isFinite(value)) return "—";
+  return "S/ " + value.toFixed(2);
+}
+
+/**
+ * Actualiza el costo por litro nominal y efectivo del aceite especializado
+ * @param {Object} aceite - { precioBalde, litrosBalde, rendimientoExtra } 
+ * rendimientoExtra ejemplo: 0.5 para +50%
+ */
+function actualizarCostoLitroEspecializado(aceite) {
+  const elNom = document.getElementById("costoLitroNominal");
+  const elEff = document.getElementById("costoLitroEfectivo");
+  if (!elNom || !elEff || !aceite) return;
+
+  const precio = Number(aceite.precioBalde);
+  const litros = Number(aceite.litrosBalde);
+  const extra = Number(aceite.rendimientoExtra); // 0.5 = +50%
+
+  if (!(precio > 0) || !(litros > 0)) {
+    elNom.textContent = "—";
+    elEff.textContent = "—";
+    return;
+  }
+
+  const costoNominal = precio / litros;
+  const litrosEfectivos = litros * (1 + (extra > 0 ? extra : 0));
+  const costoEfectivo = precio / litrosEfectivos;
+
+  elNom.textContent = `${formatPEN(costoNominal)} / L`;
+  elEff.textContent = `${formatPEN(costoEfectivo)} / L`;
+}
+  // EJEMPLO: estructura de tu aceite Tondero
+const ACEITES = {
+  tondero: {
+    nombre: "Tondero Extra Frituras",
+    precioBalde: 130,
+    litrosBalde: 20,
+    rendimientoExtra: 0.50 // +50%
+  }
+};
+
+// EJEMPLO: cuando el usuario hace click en el card de Tondero
+function seleccionarAceiteEspecializado(key) {
+  const aceite = ACEITES[key];
+  // ...tu lógica actual de selección (UI, recalcular ahorro, etc.)
+
+  // NUEVO: actualiza los litros nominal/efectivo
+  actualizarCostoLitroEspecializado(aceite);
+}
+
+// Listener ejemplo (ajusta el ID del card)
+document.getElementById("cardTondero")?.addEventListener("click", () => {
+  seleccionarAceiteEspecializado("tondero");
+});
 </script>
 </body>
 </html>
