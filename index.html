@@ -58,6 +58,7 @@
   }
   .btn.secondary{background:#1a2430;border-color:#304051;color:#d5e6f5}
   .btn:hover{filter:brightness(1.06)}
+  .btn:disabled{opacity:.6; cursor:not-allowed}
 
   .tile{border:1px solid var(--ring);border-radius:12px;padding:14px;background:#0f1821}
   .tile + .tile{margin-top:12px}
@@ -114,10 +115,17 @@
   .progress > i{display:block;height:100%;width:0;background:linear-gradient(90deg,#17b47a,#59d39f)}
   .subtle{color:#9fb2c2;font-size:13px}
 
-  .cta{margin-top:14px;border:1px solid #1b4b36;background:#0c2b1f;border-radius:12px;padding:14px}
-  .cta label{display:block;margin-bottom:8px;font-weight:700}
-  .cta input{width:100%;margin-bottom:10px;background:#072217;border-color:#145e42}
-  .cta .btn{width:100%}
+  .notice{
+    margin-top:12px;
+    border:1px solid #2c3d4c;
+    background:#0b141c;
+    border-radius:12px;
+    padding:12px;
+    color:#d5e6f5;
+    display:none;
+  }
+  .notice.ok{border-color:#1f6c4e;background:#0a1f16}
+  .notice.err{border-color:#7a2f2f;background:#1b0d0d}
 
   /* Print: solo resultados */
   @media print{
@@ -242,7 +250,6 @@
           </div>
         </div>
 
-        <!-- ✅ NUEVO: máximo precio por balde (para no gastar más) -->
         <div class="tile" style="margin-top:12px">
           <div class="ttl">🧾 Máximo precio por balde (para no gastar más)</div>
           <div class="val" id="pmax">S/ —</div>
@@ -328,13 +335,10 @@
 
           <div style="height:12px"></div>
           <button class="btn" id="btnEnviarAsesoria" type="button">Guardar solicitud</button>
+
+          <div id="msgAsesoria" class="notice" aria-live="polite"></div>
         </div>
 
-        <div class="cta" style="margin-top:14px">
-          <label>¿Quieres comprobar este rendimiento en tu cocina? 🚀</label>
-          <input id="email" type="email" placeholder="CParaguayC@alicorp.com.pe" value="CParaguayC@alicorp.com.pe"/>
-          <button class="btn" id="btnMail">Quiero recibir asesoría técnica</button>
-        </div>
       </section>
     </div>
   </div>
@@ -357,7 +361,7 @@
   // Producto (único)
   const cardTondero = $('#cardTondero');
 
-  // Tiles - especializado (dos recuadros)
+  // Tiles - especializado
   const ppEspRow = $('#ppEspRow');
   const pplEspNom = $('#pplEspNom');
   const pplEspEff = $('#pplEspEff');
@@ -367,27 +371,31 @@
   const ahorro = $('#ahorro');
   const gastoActualEl = $('#gastoActual');
   const gastoNuevoEl = $('#gastoNuevo');
-  const pmaxEl = $('#pmax'); // ✅ ahora sí existe
+  const pmaxEl = $('#pmax');
   const bar = $('#bar');
   const pctTxt = $('#porcentaje');
   const baldesGratis = $('#baldesGratis');
   const lbl1 = $('#lblPeriodo1');
   const lbl2 = $('#lblPeriodo2');
 
-  // Asesoría (✅ listeners fuera de btnLimpiar)
-  const panelDatosCliente = document.getElementById('panelDatosCliente');
-  const btnToggleAsesoria = document.getElementById('btnToggleAsesoria');
-  const btnNoAsesoria = document.getElementById('btnNoAsesoria');
+  // Asesoría
+  const panelDatosCliente = $('#panelDatosCliente');
+  const btnToggleAsesoria = $('#btnToggleAsesoria');
+  const btnNoAsesoria = $('#btnNoAsesoria');
+  const btnEnviarAsesoria = $('#btnEnviarAsesoria');
+  const msgAsesoria = $('#msgAsesoria');
 
-  function showAsesoria(show){
-    if (!panelDatosCliente) return;
-    panelDatosCliente.style.display = show ? '' : 'none';
-    if(show){
-      panelDatosCliente.scrollIntoView({behavior:'smooth', block:'start'});
-    }
+  function showNotice(kind, text){
+    if(!msgAsesoria) return;
+    msgAsesoria.className = 'notice ' + (kind === 'ok' ? 'ok' : 'err');
+    msgAsesoria.textContent = text;
+    msgAsesoria.style.display = 'block';
   }
-  btnToggleAsesoria?.addEventListener('click', ()=>showAsesoria(true));
-  btnNoAsesoria?.addEventListener('click', ()=>showAsesoria(false));
+  function hideNotice(){
+    if(!msgAsesoria) return;
+    msgAsesoria.style.display = 'none';
+    msgAsesoria.textContent = '';
+  }
 
   function fmt(n){ return isFinite(n)? n.toLocaleString('es-PE',{minimumFractionDigits:2,maximumFractionDigits:2}) : '—'; }
   function fmt0(n){ return isFinite(n)? Math.round(n).toLocaleString('es-PE',{maximumFractionDigits:0}) : '—'; }
@@ -414,7 +422,7 @@
 
     const gastoActual = P0*B*N*f;
 
-    let gastoNuevo = NaN, ahorro = NaN, pct = 0, pmax = NaN, baldesMensualesGratis = 0, B1=NaN, prod=null;
+    let gastoNuevo = NaN, ahorroV = NaN, pct = 0, pmax = NaN, baldesMensualesGratis = 0, B1=NaN, prod=null;
 
     if(selected){
       prod = {
@@ -427,14 +435,14 @@
       const effLit = prod.litros*(1+prod.boost);
       B1 = (B*L0)/effLit;
       gastoNuevo = prod.precio*B1*N*f;
-      ahorro = Math.max(0, gastoActual - gastoNuevo);
-      pct = gastoActual>0 ? (ahorro/gastoActual)*100 : 0;
+      ahorroV = Math.max(0, gastoActual - gastoNuevo);
+      pct = gastoActual>0 ? (ahorroV/gastoActual)*100 : 0;
       const weeksPerMonth = 4.33;
       baldesMensualesGratis = Math.max(0,(B - B1)*N*weeksPerMonth);
       pmax = (B>0 && B1>0) ? (P0*B)/B1 : NaN;
     }
 
-    return {ready:true,P0,L0,B,N,f,gastoActual,gastoNuevo,ahorro,pct,pmax,baldesMensualesGratis,prod};
+    return {ready:true,P0,L0,B,N,f,gastoActual,gastoNuevo,ahorro:ahorroV,pct,pmax,baldesMensualesGratis,prod};
   }
 
   function render(selected){
@@ -443,14 +451,12 @@
 
     const c = currentCalc(selected);
 
-    // Precio por litro actual (si presionaron analizar)
     if(tilePPL.dataset.show === "1" && isFinite(c.P0) && isFinite(c.L0)){
       const ppl = c.P0 / c.L0;
       pplActualEl.textContent = 'S/ ' + fmt(ppl);
       tilePPL.style.display = '';
     }
 
-    // Resultados
     if(!c.ready){
       ahorro.textContent = 'S/ 0';
       gastoActualEl.textContent = 'S/ 0';
@@ -482,7 +488,6 @@
       baldesGratis.textContent = '≈ 0 baldes gratis por mes';
     }
 
-    // Precio por litro del especializado (dos tiles)
     if(selected){
       const precio = parseFloat(selected.dataset.precio);
       const litros = parseFloat(selected.dataset.litros);
@@ -498,7 +503,94 @@
     }
   }
 
-  // Eventos
+  // Mostrar/ocultar asesoría
+  function showAsesoria(show){
+    if (!panelDatosCliente) return;
+    hideNotice();
+    panelDatosCliente.style.display = show ? '' : 'none';
+    if(show){
+      panelDatosCliente.scrollIntoView({behavior:'smooth', block:'start'});
+    }
+  }
+  btnToggleAsesoria?.addEventListener('click', ()=>showAsesoria(true));
+  btnNoAsesoria?.addEventListener('click', ()=>showAsesoria(false));
+
+  // ✅ Guardar solicitud (por ahora “stub” listo para DB)
+  function recogerDatosAsesoria(){
+    const get = (id) => (document.getElementById(id)?.value || '').trim();
+    const chk = (id) => !!document.getElementById(id)?.checked;
+
+    return {
+      createdAt: new Date().toISOString(),
+      clienteCodigo: get('clienteCodigo'),
+      clienteRazonSocial: get('clienteRazonSocial'),
+      clienteMarcaActual: get('clienteMarcaActual'),
+      clienteTelefono: get('clienteTelefono'),
+      clienteDEX: get('clienteDEX'),
+      clienteSolicitadoPor: get('clienteSolicitadoPor'),
+      clienteTelefonoVendedor: get('clienteTelefonoVendedor'),
+      clienteDireccion: get('clienteDireccion'),
+      clienteDistrito: get('clienteDistrito'),
+      asesoriaLimpieza: chk('chkLimpieza'),
+      asesoriaSalsas: chk('chkSalsas'),
+      // contexto calculadora
+      inputs: {
+        precioBaldeActual: (precioActual.value || '').trim(),
+        litrosBaldeActual: (litrosActual.value || '').trim(),
+        baldesSemana: (baldesSemana.value || '').trim(),
+        locales: (locales.value || '').trim(),
+        periodo: periodo.value
+      },
+      producto: cardTondero.classList.contains('selected') ? {
+        id: cardTondero.dataset.id,
+        precio: cardTondero.dataset.precio,
+        litros: cardTondero.dataset.litros,
+        boost: cardTondero.dataset.boost,
+        nombre: cardTondero.querySelector('h3')?.textContent?.trim()
+      } : null
+    };
+  }
+
+  function validarAsesoria(payload){
+    const faltan = [];
+    if(!payload.clienteCodigo) faltan.push('Código de cliente');
+    if(!payload.clienteRazonSocial) faltan.push('Razón social');
+    if(!payload.clienteTelefono) faltan.push('Teléfono de contacto cliente');
+    if(!payload.clienteDEX) faltan.push('Nombre DEX');
+    if(!payload.clienteSolicitadoPor) faltan.push('Solicitado por');
+    if(!payload.clienteDireccion) faltan.push('Dirección');
+    if(!payload.clienteDistrito) faltan.push('Distrito');
+    return faltan;
+  }
+
+  async function guardarSolicitudAsesoria(){
+    try{
+      btnEnviarAsesoria.disabled = true;
+      hideNotice();
+
+      const payload = recogerDatosAsesoria();
+      const faltan = validarAsesoria(payload);
+      if(faltan.length){
+        showNotice('err', 'Faltan campos: ' + faltan.join(', '));
+        return;
+      }
+
+      // ✅ Aquí irá el POST real a tu backend/base de datos.
+      // Por ahora lo dejamos visible para que confirmes que "funciona".
+      console.log('Payload asesoría listo para DB:', payload);
+
+      showNotice('ok', '¡Listo! Solicitud registrada (demo). En el siguiente paso lo conectamos a la base de datos.');
+    }catch(e){
+      console.error(e);
+      showNotice('err', 'Ocurrió un error al guardar. Revisa consola.');
+    }finally{
+      btnEnviarAsesoria.disabled = false;
+    }
+  }
+
+  btnEnviarAsesoria?.addEventListener('click', guardarSolicitudAsesoria);
+
+  // Eventos calculadora
   document.getElementById('btnAnalizar').addEventListener('click', ()=>{
     tilePPL.dataset.show = "1";
     render(cardTondero.classList.contains('selected') ? cardTondero : null);
@@ -514,7 +606,6 @@
     el.addEventListener('change', ()=>render(cardTondero.classList.contains('selected') ? cardTondero : null));
   });
 
-  // Acciones
   document.getElementById('btnLimpiar').addEventListener('click', ()=>{
     precioActual.value = '';
     baldesSemana.value = '';
@@ -524,54 +615,11 @@
     tilePPL.style.display = 'none';
     ppEspRow.style.display = 'none';
     cardTondero.classList.remove('selected');
-
-    // limpia asesoría
     showAsesoria(false);
-
     render(null);
   });
 
   document.getElementById('btnGuardar').addEventListener('click', ()=>window.print());
-
-  document.getElementById('btnMail').addEventListener('click', ()=>{
-    const selected = cardTondero.classList.contains('selected') ? cardTondero : null;
-    const c = currentCalc(selected);
-    const correo = (document.getElementById('email').value || 'CParaguayC@alicorp.com.pe').trim();
-    const asunto = 'Consulta técnica — Quri';
-    const sep = '\r\n';
-    const prod = selected ? `Tondero Frituras (S/ ${fmt(parseFloat(selected.dataset.precio))} · ${selected.dataset.litros} L · +50% rendimiento)` : '—';
-
-    const cuerpo =
-      `Hola equipo de Asesoría Técnica,${sep}${sep}Quiero validar el rendimiento en mi cocina. Análisis desde Quri:${sep}${sep}`+
-      `— Datos del cliente${sep}`+
-      `   • Código: ${document.getElementById('clienteCodigo').value || '—'}${sep}`+
-      `   • Razón social: ${document.getElementById('clienteRazonSocial').value || '—'}${sep}`+
-      `   • Nombre DEX: ${document.getElementById('clienteDEX').value || '—'}${sep}`+
-      `   • Marca actual: ${document.getElementById('clienteMarcaActual').value || '—'}${sep}`+
-      `   • Teléfono cliente: ${document.getElementById('clienteTelefono').value || '—'}${sep}`+
-      `   • Teléfono vendedor: ${document.getElementById('clienteTelefonoVendedor').value || '—'}${sep}`+
-      `   • Dirección: ${document.getElementById('clienteDireccion').value || '—'}${sep}`+
-      `   • Distrito: ${document.getElementById('clienteDistrito').value || '—'}${sep}`+
-      `   • Solicitado por: ${document.getElementById('clienteSolicitadoPor').value || '—'}${sep}${sep}`+
-      `— Consumo actual${sep}`+
-      `   • Precio por balde: S/ ${fmt(c.P0)}${sep}`+
-      `   • Litros por balde: ${fmt(c.L0)} L${sep}`+
-      `   • Baldes por semana: ${fmt(c.B)}${sep}`+
-      `   • N° de locales: ${fmt(c.N)}${sep}`+
-      `   • Periodo: ${periodoLabel()}${sep}${sep}`+
-      `— Aceite especializado evaluado${sep}`+
-      `   • Producto: ${prod}${sep}${sep}`+
-      `— Resultados${sep}`+
-      `   • Gasto actual (${periodoLabel()}): S/ ${fmt(c.gastoActual)}${sep}`+
-      `   • Gasto con especializado (${periodoLabel()}): S/ ${fmt(c.gastoNuevo)}${sep}`+
-      `   • Ahorro estimado: S/ ${fmt(c.ahorro)}${sep}`+
-      `   • Ahorro vs. actual: ${Math.max(0,Math.round(c.pct||0))}%${sep}`+
-      `   • Máximo precio por balde para no gastar más: S/ ${isFinite(c.pmax)?fmt(c.pmax):'—'}${sep}${sep}`+
-      `Gracias.`;
-
-    const mailto = `mailto:${encodeURIComponent(correo)}?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(cuerpo)}`;
-    window.location.href = mailto;
-  });
 
   // Inicial
   render(null);
