@@ -102,21 +102,6 @@
   .actions .field{min-width:220px}
   .actions .right{display:flex;gap:12px}
 
-  <!-- Bloque de costo por litro (nominal vs efectivo) -->
-<div id="bloqueCostoLitro" class="mini-card" style="margin-top:12px;">
-  <div style="display:flex; gap:16px; flex-wrap:wrap;">
-    <div>
-      <div style="opacity:.8; font-size:12px;">Costo por litro (nominal)</div>
-      <div style="font-size:18px; font-weight:700;" id="costoLitroNominal">—</div>
-    </div>
-
-    <div>
-      <div style="opacity:.8; font-size:12px;">Costo por litro (efectivo con rendimiento)</div>
-      <div style="font-size:18px; font-weight:700;" id="costoLitroEfectivo">—</div>
-    </div>
-  </div>
-</div>
-
   /* Resultados */
   .results .head{margin:0 0 12px 0;font-size:18px}
   .stat{margin-top:14px;padding:14px;border-radius:12px;border:1px solid var(--ring);
@@ -148,6 +133,7 @@
     <header>
       <img src="images/alicorp.png" alt="Alicorp"
            onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22160%22 height=%2240%22><rect width=%22100%25%22 height=%22100%25%22 fill=%22%23121f2a%22/><text x=%2210%22 y=%2226%22 fill=%22%23ffd76a%22 font-size=%2220%22 font-family=%22Arial%22>ALICORP</text></svg>';">
+
       <div>
         <h1>Quri — tu calculadora de ahorro</h1>
         <p class="subtle">Buscando el dorado perfecto que rinda más</p>
@@ -189,6 +175,7 @@
 
         <div style="height:18px"></div>
         <h2>Elige tu aceite especializado</h2>
+
         <!-- Solo Tondero -->
         <article class="card" id="cardTondero" data-id="tondero" data-precio="130" data-litros="20" data-boost="0.5" aria-label="Tondero Extra Frituras">
           <img id="imgTondero" src="images/tonderofrituras"
@@ -255,88 +242,93 @@
           </div>
         </div>
 
+        <!-- ✅ NUEVO: máximo precio por balde (para no gastar más) -->
+        <div class="tile" style="margin-top:12px">
+          <div class="ttl">🧾 Máximo precio por balde (para no gastar más)</div>
+          <div class="val" id="pmax">S/ —</div>
+        </div>
+
         <div class="tile" style="margin-top:12px">
           <div class="ttl">📈 Progreso de ahorro</div>
           <div class="progress" aria-label="Progreso"><i id="bar" style="width:0%"></i></div>
           <div class="subtle" id="porcentaje" style="margin-top:6px">Ahorro del 0% vs. situación actual</div>
         </div>
-        
+
         <div class="tile" style="margin-top:12px" id="ctaAsesoria">
-  <div class="ttl">🧑‍🍳 ¿El cliente quiere recibir asesoría técnica?</div>
-  <div class="subtle" style="margin-top:6px">Si marcas “Sí”, se abrirá un formulario para registrar el caso.</div>
+          <div class="ttl">🧑‍🍳 ¿El cliente quiere recibir asesoría técnica?</div>
+          <div class="subtle" style="margin-top:6px">Si marcas “Sí”, se abrirá un formulario para registrar el caso.</div>
 
-  <div style="display:flex; gap:10px; margin-top:12px; flex-wrap:wrap">
-    <button class="btn" id="btnToggleAsesoria" type="button">Sí, registrar asesoría</button>
-    <button class="btn secondary" id="btnNoAsesoria" type="button">No por ahora</button>
-  </div>
-</div>
+          <div style="display:flex; gap:10px; margin-top:12px; flex-wrap:wrap">
+            <button class="btn" id="btnToggleAsesoria" type="button">Sí, registrar asesoría</button>
+            <button class="btn secondary" id="btnNoAsesoria" type="button">No por ahora</button>
+          </div>
+        </div>
 
-<div class="panel" id="panelDatosCliente" style="display:none; margin-top:12px">
-  <h2>Datos para asesoría técnica</h2>
+        <div class="panel" id="panelDatosCliente" style="display:none; margin-top:12px">
+          <h2>Datos para asesoría técnica</h2>
 
-  <div class="inputs">
-    <div>
-      <label>Código de cliente</label>
-      <input id="clienteCodigo" type="text" placeholder="Ej: 001234">
-    </div>
+          <div class="inputs">
+            <div>
+              <label>Código de cliente</label>
+              <input id="clienteCodigo" type="text" placeholder="Ej: 001234">
+            </div>
 
-    <div>
-      <label>Razón social</label>
-      <input id="clienteRazonSocial" type="text" placeholder="Ej: Restaurante S.A.C.">
-    </div>
+            <div>
+              <label>Razón social</label>
+              <input id="clienteRazonSocial" type="text" placeholder="Ej: Restaurante S.A.C.">
+            </div>
 
-    <div>
-      <label>Marca actual</label>
-      <input id="clienteMarcaActual" type="text" placeholder="Ej: Aceite X">
-    </div>
+            <div>
+              <label>Marca actual</label>
+              <input id="clienteMarcaActual" type="text" placeholder="Ej: Aceite X">
+            </div>
 
-    <div>
-      <label>Teléfono de contacto cliente </label>
-      <input id="clienteTelefono" type="tel" placeholder="Ej: Teléfono del cliente">
-    </div>
+            <div>
+              <label>Teléfono de contacto cliente</label>
+              <input id="clienteTelefono" type="tel" placeholder="Ej: Teléfono del cliente">
+            </div>
 
-    <div>
-      <label>Nombre DEX</label>
-      <input id="clienteDEX" type="text" placeholder="Ej: Juan Pérez">
-    </div>
+            <div>
+              <label>Nombre DEX</label>
+              <input id="clienteDEX" type="text" placeholder="Ej: Juan Pérez">
+            </div>
 
-    <div>
-      <label>Solicitado por</label>
-      <input id="clienteSolicitadoPor" type="text" placeholder="Ej: Nombre del vendedor">
-    </div>
-    
-    <div>
-      <label>Teléfono de contacto vendedor </label>
-      <input id="clienteTelefono" type="tel" placeholder="Ej: Teléfono del vendedor">
-    </div>
+            <div>
+              <label>Solicitado por</label>
+              <input id="clienteSolicitadoPor" type="text" placeholder="Ej: Nombre del vendedor">
+            </div>
 
-    <div>
-      <label>Dirección</label>
-      <input id="clienteDireccion" type="text" placeholder="Ej: Av. La Marina 123">
-    </div>
+            <div>
+              <label>Teléfono de contacto vendedor</label>
+              <input id="clienteTelefonoVendedor" type="tel" placeholder="Ej: Teléfono del vendedor">
+            </div>
 
-    <div>
-      <label>Distrito</label>
-      <input id="clienteDistrito" type="text" placeholder="Ej: San Miguel">
-    </div>
-  </div>
+            <div>
+              <label>Dirección</label>
+              <input id="clienteDireccion" type="text" placeholder="Ej: Av. La Marina 123">
+            </div>
 
-  <!-- ✅ Checkboxes -->
-  <div style="display:grid; gap:10px; margin-top:12px;">
-    <label style="display:flex; align-items:center; gap:10px; margin:0; font-weight:600;">
-      <input id="chkLimpieza" type="checkbox" style="width:auto; transform:scale(1.1);">
-      Asesoría potencial en limpieza
-    </label>
+            <div>
+              <label>Distrito</label>
+              <input id="clienteDistrito" type="text" placeholder="Ej: San Miguel">
+            </div>
+          </div>
 
-    <label style="display:flex; align-items:center; gap:10px; margin:0; font-weight:600;">
-      <input id="chkSalsas" type="checkbox" style="width:auto; transform:scale(1.1);">
-      Asesoría potencial en salsas
-    </label>
-  </div>
+          <div style="display:grid; gap:10px; margin-top:12px;">
+            <label style="display:flex; align-items:center; gap:10px; margin:0; font-weight:600;">
+              <input id="chkLimpieza" type="checkbox" style="width:auto; transform:scale(1.1);">
+              Asesoría potencial en limpieza
+            </label>
 
-  <div style="height:12px"></div>
-  <button class="btn" id="btnEnviarAsesoria" type="button">Guardar solicitud</button>
-</div>
+            <label style="display:flex; align-items:center; gap:10px; margin:0; font-weight:600;">
+              <input id="chkSalsas" type="checkbox" style="width:auto; transform:scale(1.1);">
+              Asesoría potencial en salsas
+            </label>
+          </div>
+
+          <div style="height:12px"></div>
+          <button class="btn" id="btnEnviarAsesoria" type="button">Guardar solicitud</button>
+        </div>
 
         <div class="cta" style="margin-top:14px">
           <label>¿Quieres comprobar este rendimiento en tu cocina? 🚀</label>
@@ -375,16 +367,30 @@
   const ahorro = $('#ahorro');
   const gastoActualEl = $('#gastoActual');
   const gastoNuevoEl = $('#gastoNuevo');
-  const pmaxEl = $('#pmax');
+  const pmaxEl = $('#pmax'); // ✅ ahora sí existe
   const bar = $('#bar');
   const pctTxt = $('#porcentaje');
   const baldesGratis = $('#baldesGratis');
   const lbl1 = $('#lblPeriodo1');
   const lbl2 = $('#lblPeriodo2');
 
+  // Asesoría (✅ listeners fuera de btnLimpiar)
+  const panelDatosCliente = document.getElementById('panelDatosCliente');
+  const btnToggleAsesoria = document.getElementById('btnToggleAsesoria');
+  const btnNoAsesoria = document.getElementById('btnNoAsesoria');
+
+  function showAsesoria(show){
+    if (!panelDatosCliente) return;
+    panelDatosCliente.style.display = show ? '' : 'none';
+    if(show){
+      panelDatosCliente.scrollIntoView({behavior:'smooth', block:'start'});
+    }
+  }
+  btnToggleAsesoria?.addEventListener('click', ()=>showAsesoria(true));
+  btnNoAsesoria?.addEventListener('click', ()=>showAsesoria(false));
+
   function fmt(n){ return isFinite(n)? n.toLocaleString('es-PE',{minimumFractionDigits:2,maximumFractionDigits:2}) : '—'; }
-  function fmt0(n){ return isFinite(n)? Math.round(n).toLocaleString('es-PE',{maximumFractionDigits:0}) : '—'; } // 0 decimales
-  function fmtInt(n){ return isFinite(n)? Math.round(n).toLocaleString('es-PE') : '—'; }
+  function fmt0(n){ return isFinite(n)? Math.round(n).toLocaleString('es-PE',{maximumFractionDigits:0}) : '—'; }
 
   function weeksFactor(){
     if(periodo.value==='semana') return 1;
@@ -419,7 +425,7 @@
         nombre: selected.querySelector('h3').textContent.trim()
       };
       const effLit = prod.litros*(1+prod.boost);
-      B1 = (B*L0)/effLit; // baldes/sem con especializado
+      B1 = (B*L0)/effLit;
       gastoNuevo = prod.precio*B1*N*f;
       ahorro = Math.max(0, gastoActual - gastoNuevo);
       pct = gastoActual>0 ? (ahorro/gastoActual)*100 : 0;
@@ -437,14 +443,14 @@
 
     const c = currentCalc(selected);
 
-    // Precio por litro actual (si presionaron analizar) - mantiene 2 decimales
+    // Precio por litro actual (si presionaron analizar)
     if(tilePPL.dataset.show === "1" && isFinite(c.P0) && isFinite(c.L0)){
       const ppl = c.P0 / c.L0;
       pplActualEl.textContent = 'S/ ' + fmt(ppl);
       tilePPL.style.display = '';
     }
 
-    // Resultados (0 decimales)
+    // Resultados
     if(!c.ready){
       ahorro.textContent = 'S/ 0';
       gastoActualEl.textContent = 'S/ 0';
@@ -476,7 +482,7 @@
       baldesGratis.textContent = '≈ 0 baldes gratis por mes';
     }
 
-    // Precio por litro del especializado (dos tiles, mantienen 2 decimales)
+    // Precio por litro del especializado (dos tiles)
     if(selected){
       const precio = parseFloat(selected.dataset.precio);
       const litros = parseFloat(selected.dataset.litros);
@@ -518,20 +524,10 @@
     tilePPL.style.display = 'none';
     ppEspRow.style.display = 'none';
     cardTondero.classList.remove('selected');
-    const panelDatosCliente = document.getElementById('panelDatosCliente');
-const btnToggleAsesoria = document.getElementById('btnToggleAsesoria');
-const btnNoAsesoria = document.getElementById('btnNoAsesoria');
 
-function showAsesoria(show){
-  if (!panelDatosCliente) return;
-  panelDatosCliente.style.display = show ? '' : 'none';
-  if(show){
-    panelDatosCliente.scrollIntoView({behavior:'smooth', block:'start'});
-  }
-}
+    // limpia asesoría
+    showAsesoria(false);
 
-btnToggleAsesoria?.addEventListener('click', ()=>showAsesoria(true));
-btnNoAsesoria?.addEventListener('click', ()=>showAsesoria(false));
     render(null);
   });
 
@@ -544,19 +540,35 @@ btnNoAsesoria?.addEventListener('click', ()=>showAsesoria(false));
     const asunto = 'Consulta técnica — Quri';
     const sep = '\r\n';
     const prod = selected ? `Tondero Frituras (S/ ${fmt(parseFloat(selected.dataset.precio))} · ${selected.dataset.litros} L · +50% rendimiento)` : '—';
+
     const cuerpo =
-      `Hola equipo de Asesoría Técnica,${sep}${sep}Quiero validar el rendimiento en mi cocina. Análisis desde Quri:${sep}${sep}— Datos del cliente
-   • Código: ${document.getElementById('clienteCodigo').value || '—'}
-   • Razón social: ${document.getElementById('clienteRazonSocial').value || '—'}
-   • Nombre DEX: ${document.getElementById('clienteDEX').value || '—'}
-   • Marca actual: ${document.getElementById('clienteMarcaActual').value || '—'}
-   • Teléfono: ${document.getElementById('clienteTelefono').value || '—'}
-   • Dirección: ${document.getElementById('clienteDireccion').value || '—'}
-   • Distrito: ${document.getElementById('clienteDistrito').value || '—'}
-   • Solicitado por: ${document.getElementById('clienteSolicitadoPor').value || '—'}
+      `Hola equipo de Asesoría Técnica,${sep}${sep}Quiero validar el rendimiento en mi cocina. Análisis desde Quri:${sep}${sep}`+
+      `— Datos del cliente${sep}`+
+      `   • Código: ${document.getElementById('clienteCodigo').value || '—'}${sep}`+
+      `   • Razón social: ${document.getElementById('clienteRazonSocial').value || '—'}${sep}`+
+      `   • Nombre DEX: ${document.getElementById('clienteDEX').value || '—'}${sep}`+
+      `   • Marca actual: ${document.getElementById('clienteMarcaActual').value || '—'}${sep}`+
+      `   • Teléfono cliente: ${document.getElementById('clienteTelefono').value || '—'}${sep}`+
+      `   • Teléfono vendedor: ${document.getElementById('clienteTelefonoVendedor').value || '—'}${sep}`+
+      `   • Dirección: ${document.getElementById('clienteDireccion').value || '—'}${sep}`+
+      `   • Distrito: ${document.getElementById('clienteDistrito').value || '—'}${sep}`+
+      `   • Solicitado por: ${document.getElementById('clienteSolicitadoPor').value || '—'}${sep}${sep}`+
+      `— Consumo actual${sep}`+
+      `   • Precio por balde: S/ ${fmt(c.P0)}${sep}`+
+      `   • Litros por balde: ${fmt(c.L0)} L${sep}`+
+      `   • Baldes por semana: ${fmt(c.B)}${sep}`+
+      `   • N° de locales: ${fmt(c.N)}${sep}`+
+      `   • Periodo: ${periodoLabel()}${sep}${sep}`+
+      `— Aceite especializado evaluado${sep}`+
+      `   • Producto: ${prod}${sep}${sep}`+
+      `— Resultados${sep}`+
+      `   • Gasto actual (${periodoLabel()}): S/ ${fmt(c.gastoActual)}${sep}`+
+      `   • Gasto con especializado (${periodoLabel()}): S/ ${fmt(c.gastoNuevo)}${sep}`+
+      `   • Ahorro estimado: S/ ${fmt(c.ahorro)}${sep}`+
+      `   • Ahorro vs. actual: ${Math.max(0,Math.round(c.pct||0))}%${sep}`+
+      `   • Máximo precio por balde para no gastar más: S/ ${isFinite(c.pmax)?fmt(c.pmax):'—'}${sep}${sep}`+
+      `Gracias.`;
 
-
-— Consumo actual${sep}   • Precio por balde: S/ ${fmt(c.P0)}${sep}   • Litros por balde: ${fmt(c.L0)} L${sep}   • Baldes por semana: ${fmt(c.B)}${sep}   • N° de locales: ${fmt(c.N)}${sep}   • Periodo: ${periodoLabel()}${sep}${sep}— Aceite especializado evaluado${sep}   • Producto: ${prod}${sep}${sep}— Resultados${sep}   • Gasto actual (${periodoLabel()}): S/ ${fmt(c.gastoActual)}${sep}   • Gasto con especializado (${periodoLabel()}): S/ ${fmt(c.gastoNuevo)}${sep}   • Ahorro estimado: S/ ${fmt(c.ahorro)}${sep}   • Ahorro vs. actual: ${Math.max(0,Math.round(c.pct||0))}%${sep}   • Máximo precio por balde para no gastar más: S/ ${isFinite(c.pmax)?fmt(c.pmax):'—'}${sep}${sep}Gracias.`;
     const mailto = `mailto:${encodeURIComponent(correo)}?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(cuerpo)}`;
     window.location.href = mailto;
   });
@@ -564,62 +576,6 @@ btnNoAsesoria?.addEventListener('click', ()=>showAsesoria(false));
   // Inicial
   render(null);
 })();
-// Helper formateo
-function formatPEN(value) {
-  if (!isFinite(value)) return "—";
-  return "S/ " + value.toFixed(2);
-}
-
-/**
- * Actualiza el costo por litro nominal y efectivo del aceite especializado
- * @param {Object} aceite - { precioBalde, litrosBalde, rendimientoExtra } 
- * rendimientoExtra ejemplo: 0.5 para +50%
- */
-function actualizarCostoLitroEspecializado(aceite) {
-  const elNom = document.getElementById("costoLitroNominal");
-  const elEff = document.getElementById("costoLitroEfectivo");
-  if (!elNom || !elEff || !aceite) return;
-
-  const precio = Number(aceite.precioBalde);
-  const litros = Number(aceite.litrosBalde);
-  const extra = Number(aceite.rendimientoExtra); // 0.5 = +50%
-
-  if (!(precio > 0) || !(litros > 0)) {
-    elNom.textContent = "—";
-    elEff.textContent = "—";
-    return;
-  }
-
-  const costoNominal = precio / litros;
-  const litrosEfectivos = litros * (1 + (extra > 0 ? extra : 0));
-  const costoEfectivo = precio / litrosEfectivos;
-
-  elNom.textContent = `${formatPEN(costoNominal)} / L`;
-  elEff.textContent = `${formatPEN(costoEfectivo)} / L`;
-}
-  // EJEMPLO: estructura de tu aceite Tondero
-const ACEITES = {
-  tondero: {
-    nombre: "Tondero Extra Frituras",
-    precioBalde: 130,
-    litrosBalde: 20,
-    rendimientoExtra: 0.50 // +50%
-  }
-};
-
-// EJEMPLO: cuando el usuario hace click en el card de Tondero
-function seleccionarAceiteEspecializado(key) {
-  const aceite = ACEITES[key];
-  // ...tu lógica actual de selección (UI, recalcular ahorro, etc.)
-
-  // NUEVO: actualiza los litros nominal/efectivo
-  actualizarCostoLitroEspecializado(aceite);
-}
-
-// Listener ejemplo (ajusta el ID del card)
-document.getElementById("cardTondero")?.addEventListener("click", () => {
-  seleccionarAceiteEspecializado("tondero");
-});
 </script>
 </body>
 </html>
